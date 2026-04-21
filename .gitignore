@@ -1,0 +1,13 @@
+instructions.md
+.vscode/extensions.json
+.vscode/launch.json
+.vscode/settings.json
+.vscode/tasks.json
+version-a-durable-functions/.vscode/extensions.json
+version-a-durable-functions/.vscode/launch.json
+version-a-durable-functions/.vscode/settings.json
+version-a-durable-functions/.vscode/tasks.json
+version-b-logic-apps/.vscode/extensions.json
+version-b-logic-apps/.vscode/launch.json
+version-b-logic-apps/.vscode/settings.json
+version-b-logic-apps/.vscode/tasks.json
