@@ -1,0 +1,119 @@
+### Local
+# @baseUrl = http://localhost:7071/api
+
+### Azure
+@baseUrl = https://func-expense-approval-a-fyduepe7ccb9hyhp.canadacentral-01.azurewebsites.net/api
+
+### ─────────────────────────────────────────────
+### Scenario 1: Valid expense under $100 → Auto-approved
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "Alice Smith",
+  "employeeEmail": "alice@example.com",
+  "amount": 45.00,
+  "category": "meals",
+  "description": "Team lunch",
+  "managerEmail": "manager@example.com"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 2: Valid expense >= $100, manager approves
+### Step 1 — Submit expense (copy instanceId from response)
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "Bob Jones",
+  "employeeEmail": "bob@example.com",
+  "amount": 350.00,
+  "category": "travel",
+  "description": "Flight to Toronto",
+  "managerEmail": "manager@example.com"
+}
+
+### Step 2 — Check status (replace <instanceId>)
+GET {{baseUrl}}/expenses/dd796d5578ea4c37a6ff2321e9ab8537/status
+
+### Step 3 — Manager approves (replace <instanceId> with value from above)
+POST {{baseUrl}}/expenses/dd796d5578ea4c37a6ff2321e9ab8537/decision
+Content-Type: application/json
+
+{
+  "approved": true,
+  "reason": "Approved for business travel"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 3: Valid expense >= $100, manager rejects
+### Step 1 — Submit expense
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "Carol White",
+  "employeeEmail": "carol@example.com",
+  "amount": 200.00,
+  "category": "equipment",
+  "description": "External monitor",
+  "managerEmail": "manager@example.com"
+}
+
+### Step 2 — Check status (replace <instanceId>)
+GET {{baseUrl}}/expenses/6c232757d55042b489927a92b3cbc9b4/status
+
+### Step 3 — Manager rejects (replace <instanceId>)
+POST {{baseUrl}}/expenses/0f446e70aba54ff5899c5b50fba533bb/decision
+Content-Type: application/json
+
+{
+  "approved": false,
+  "reason": "Budget exceeded for this quarter"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 4: Valid expense >= $100, no manager response → Escalated
+### Submit and wait for timeout (default: 2 minutes)
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "David Brown",
+  "employeeEmail": "david@example.com",
+  "amount": 500.00,
+  "category": "software",
+  "description": "Annual license renewal",
+  "managerEmail": "manager@example.com"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 5: Missing required fields → Validation error
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "Eve Davis",
+  "amount": 150.00,
+  "category": "supplies"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 6: Invalid category → Validation error
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/expenses
+Content-Type: application/json
+
+{
+  "employeeName": "Frank Lee",
+  "employeeEmail": "frank@example.com",
+  "amount": 75.00,
+  "category": "entertainment",
+  "description": "Client dinner",
+  "managerEmail": "manager@example.com"
+}

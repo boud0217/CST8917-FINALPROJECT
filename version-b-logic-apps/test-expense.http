@@ -1,0 +1,77 @@
+### Local
+# @baseUrl = http://localhost:7071/api
+
+### Azure
+@baseUrl = https://func-expense-approval-b-efaqgxdshaasg8c7.canadacentral-01.azurewebsites.net/api
+
+### ─────────────────────────────────────────────
+### Scenario 1: Valid expense under $100 → requiresApproval: false
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/validate-expense
+Content-Type: application/json
+
+{
+  "employeeName": "Alice Smith",
+  "employeeEmail": "alice@example.com",
+  "amount": 45.00,
+  "category": "meals",
+  "description": "Team lunch",
+  "managerEmail": "manager@example.com"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 2: Valid expense >= $100 → requiresApproval: true
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/validate-expense
+Content-Type: application/json
+
+{
+  "employeeName": "Bob Jones",
+  "employeeEmail": "bob@example.com",
+  "amount": 350.00,
+  "category": "travel",
+  "description": "Flight to Toronto",
+  "managerEmail": "manager@example.com"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 3: Missing required fields → valid: false
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/validate-expense
+Content-Type: application/json
+
+{
+  "employeeName": "Eve Davis",
+  "amount": 150.00,
+  "category": "supplies"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 4: Invalid category → valid: false
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/validate-expense
+Content-Type: application/json
+
+{
+  "employeeName": "Frank Lee",
+  "employeeEmail": "frank@example.com",
+  "amount": 75.00,
+  "category": "entertainment",
+  "description": "Client dinner",
+  "managerEmail": "manager@example.com"
+}
+
+### ─────────────────────────────────────────────
+### Scenario 5: Invalid amount → valid: false
+### ─────────────────────────────────────────────
+POST {{baseUrl}}/validate-expense
+Content-Type: application/json
+
+{
+  "employeeName": "Grace Kim",
+  "employeeEmail": "grace@example.com",
+  "amount": "not-a-number",
+  "category": "software",
+  "description": "License",
+  "managerEmail": "manager@example.com"
+}
