@@ -11,3 +11,6 @@ version-b-logic-apps/.vscode/extensions.json
 version-b-logic-apps/.vscode/launch.json
 version-b-logic-apps/.vscode/settings.json
 version-b-logic-apps/.vscode/tasks.json
+**/local.settings.json
+**/.python_packages/
+presentation/~$*
